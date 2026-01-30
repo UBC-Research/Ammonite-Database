@@ -104,26 +104,6 @@
     "class": "Cephalopoda",
     "order": "Ammonitida",
     "family": "Celoniceratidae",
-    "genus": "Aioloceras",
-    "species": "morganiforme",
-    "period": "Albien",
-    "locality": "Madagascar",
-    "D": 98.0,
-    "H": 47.0,
-    "W": 29.0,
-    "U": 23.0,
-    "ratios": {
-      "H/D": 0.47959183673469385,
-      "W/D": 0.29591836734693877,
-      "U/D": 0.23469387755102042,
-      "W/H": 0.6170212765957447
-    }
-  },
-  {
-    "phylum": "Mollusca",
-    "class": "Cephalopoda",
-    "order": "Ammonitida",
-    "family": "Celoniceratidae",
     "genus": "Cleoniceras",
     "species": "morganiforme",
     "period": "Albien",
@@ -137,46 +117,6 @@
       "W/D": 0.29591836734693877,
       "U/D": 0.23469387755102042,
       "W/H": 0.6170212765957447
-    }
-  },
-  {
-    "phylum": "Mollusca",
-    "class": "Cephalopoda",
-    "order": "Ammonitida",
-    "family": "Celoniceratidae",
-    "genus": "Cleoniceras",
-    "species": "cleoniforme.",
-    "period": "Albien",
-    "locality": "Madagascar",
-    "D": 97.0,
-    "H": 48.0,
-    "W": 29.0,
-    "U": 20.0,
-    "ratios": {
-      "H/D": 0.4948453608247423,
-      "W/D": 0.29896907216494845,
-      "U/D": 0.20618556701030927,
-      "W/H": 0.6041666666666666
-    }
-  },
-  {
-    "phylum": "Mollusca",
-    "class": "Cephalopoda",
-    "order": "Ammonitida",
-    "family": "Celoniceratidae",
-    "genus": "Cleoniceras",
-    "species": "cleoniforme.",
-    "period": "Albien",
-    "locality": "Madagascar",
-    "D": 105.0,
-    "H": 50.0,
-    "W": 31.0,
-    "U": 25.0,
-    "ratios": {
-      "H/D": 0.47619047619047616,
-      "W/D": 0.29523809523809524,
-      "U/D": 0.23809523809523808,
-      "W/H": 0.62
     }
   },
   {
