@@ -1,0 +1,42 @@
+[
+  {
+    "phylum": "Mollusca",
+    "class": "Cephalopoda",
+    "order": "Ammonitida",
+    "family": "Celoniceratidae",
+    "genus": "Aioloceras",
+    "species": "Besairiei",
+    "period": "Albien",
+    "locality": "Madagascar",
+    "D": 120.0,
+    "H": 33.0,
+    "W": 56.0,
+    "U": 26.0,
+    "ratios": {
+      "H/D": 0.275,
+      "W/D": 0.4666666666666667,
+      "U/D": 0.21666666666666667,
+      "W/H": 1.696969696969697
+    }
+  },
+  {
+    "phylum": "Mollusca",
+    "class": "Cephalopoda",
+    "order": "Ammonitida",
+    "family": "Celoniceratidae",
+    "genus": "Aioloceras",
+    "species": "besairiei ",
+    "period": "Albien",
+    "locality": "Madagascar",
+    "D": 56.0,
+    "H": 22.0,
+    "W": 17.0,
+    "U": 14.0,
+    "ratios": {
+      "H/D": 0.39285714285714285,
+      "W/D": 0.30357142857142855,
+      "U/D": 0.25,
+      "W/H": 0.7727272727272727
+    }
+  }
+]
