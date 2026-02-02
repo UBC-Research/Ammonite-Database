@@ -131,53 +131,63 @@ def update_species_ratios(*args):
     s_Ur.config(text=f"U/D {fmt(U/D)}" if D and U else "")
     s_WH.config(text=f"W/H {fmt(W/H)}" if H and W else "")
 
+taxonomy_names = {
+    0: "phylum",
+    1: "class",
+    2: "order",
+    3: "family",
+    4: "genus",
+    5: "species",
+}
+taxonomy_cache = {}
 def auto_fill_taxonomy(*args):
     """
-    Auto-fill higher taxonomy based on species, genus, or family.
+    Auto-fill higher taxonomy based on inputted fields.
     Only sets species to "sp." once if empty.
     """
+
+    # Get global variables
+    global taxonomy
+    global taxonomy_names
+
+    actual_taxonomy = {}
+    for rank,field in taxonomy.items():
+        actual_taxonomy[rank] = field.get().strip()
+
+    # Update cache and fill only modified fields
+    modified_taxonomy = {}
+    for rank,field in actual_taxonomy.items():
+        if field != taxonomy_cache.get(rank, ""):
+            modified_taxonomy[rank] = field
+    taxonomy_cache.update(modified_taxonomy)
+
     all_species = load_species_json()
-    species_name = s_species.get().strip()
-    genus_name = s_genus.get().strip()
-    family_name = s_family.get().strip()
 
-    # Prevent overwriting while typing
-    if getattr(auto_fill_taxonomy, "setting_sp", False):
-        auto_fill_taxonomy.setting_sp = False
-        return
+    rank_indices = sorted(taxonomy_names.keys(), reverse=True)
+    match_found = False
 
-    # Species match
-    if species_name and genus_name:
-        for sp in all_species:
-            if sp["species"] == species_name and sp["genus"] == genus_name:
-                s_genus.set(sp["genus"])
-                s_family.set(sp["family"])
-                s_order.set(sp["order"])
-                s_class.set(sp["class"])
-                s_phylum.set(sp["phylum"])
-                return
+    for rank_idx in rank_indices:
+        rank_name = taxonomy_names[rank_idx]
+        user_value = modified_taxonomy.get(rank_idx)
 
-    # Genus match
-    if genus_name:
-        for sp in all_species:
-            if sp["genus"] == genus_name:
-                s_family.set(sp["family"])
-                s_order.set(sp["order"])
-                s_class.set(sp["class"])
-                s_phylum.set(sp["phylum"])
-                if not species_name:
-                    auto_fill_taxonomy.setting_sp = True
-                    s_species.set("sp.")
-                return
+        # Only attempt to match if the user actually modified this rank and if it's not empty
+        if user_value:
+            # Search the database (all_species) for a match at this rank
+            for db_entry in all_species:
+                # Case-insensitive comparison is usually safer
+                if db_entry.get(rank_name, "").strip().lower() == user_value.lower():
+                    # Set the remaining fields from the database entry
+                    for rank in rank_indices:
+                        # Only fill the upper taxonomy fields
+                        if rank <= rank_idx:
+                            fill_name = taxonomy_names[rank]
+                            taxonomy[rank].set(db_entry.get(fill_name, ""))
 
-    # Family match
-    if family_name:
-        for sp in all_species:
-            if sp["family"] == family_name:
-                s_order.set(sp["order"])
-                s_class.set(sp["class"])
-                s_phylum.set(sp["phylum"])
-                return
+                    match_found = True
+                    break # Break the inner loop (species list)
+
+        if match_found:
+            break # Break the outer loop (taxonomy ranks)
 
 def save_species():
     D = to_float(s_D.get())
@@ -186,6 +196,7 @@ def save_species():
     U = to_float(s_U.get())
 
     species_data = {
+        "specimen_id": s_specimen_id.get(),
         "phylum": s_phylum.get(),
         "class": s_class.get(),
         "order": s_order.get(),
@@ -269,7 +280,7 @@ def clear_all():
     sp_Ur.config(text="")
     sp_WH.config(text="")
 
-    for var in [s_specimen_count, s_phylum, s_class, s_order, s_family, s_genus,
+    for var in [s_specimen_id, s_phylum, s_class, s_order, s_family, s_genus,
                 s_species, s_period, s_locality, s_D, s_H, s_W, s_U]:
         var.set("")
     s_Hr.config(text="")
@@ -322,19 +333,31 @@ tk.Button(root,text="Clear All",command=clear_all,bg="orange").grid(row=7,column
 # ===== Species Section =====
 tk.Label(root,text="SPECIES DATA",font=("Arial",10,"bold")).grid(row=8,column=0,columnspan=4,pady=10)
 
-s_specimen_count = tk.StringVar()
+s_specimen_id = tk.StringVar()
+
 s_phylum = tk.StringVar()
 s_class = tk.StringVar()
 s_order = tk.StringVar()
 s_family = tk.StringVar()
 s_genus = tk.StringVar()
 s_species = tk.StringVar()
+
+taxonomy = {
+    0: s_phylum,
+    1: s_class,
+    2: s_order,
+    3: s_family,
+    4: s_genus,
+    5: s_species
+}
+
 s_period = tk.StringVar()
 s_locality = tk.StringVar()
+
 s_D = tk.StringVar(); s_H = tk.StringVar(); s_W = tk.StringVar(); s_U = tk.StringVar()
 
-tk.Label(root,text="Specimen count").grid(row=9,column=0,sticky="e")
-tk.Entry(root,textvariable=s_specimen_count).grid(row=9,column=1)
+tk.Label(root,text="Specimen id").grid(row=9,column=0,sticky="e")
+tk.Entry(root,textvariable=s_specimen_id).grid(row=9,column=1)
 tk.Label(root,text="Ratios").grid(row=17,column=2)
 
 for i,(lbl,var) in enumerate([
@@ -361,7 +384,7 @@ s_Ur = tk.Label(root,anchor="w"); s_Ur.grid(row=21,column=2)
 s_WH = tk.Label(root,anchor="w"); s_WH.grid(row=22,column=2)
 
 # Auto-fill triggers
-for v in (s_species,s_genus,s_family):
+for v in taxonomy.values():
     v.trace_add("write", auto_fill_taxonomy)
 for v in (s_D,s_H,s_W,s_U):
     v.trace_add("write", update_species_ratios)
